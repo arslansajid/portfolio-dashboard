@@ -7,50 +7,50 @@ import { API_END_POINT } from '../config';
 import Cookie from 'js-cookie';
 const token = Cookie.get('panzer_access_token');
 
-export default class Exercise extends React.Component {
+export default class Projects extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      exercises: [],
+      projects: [],
       activePage: 1,
       pages: 1,
       q: '',
       loading: false,
-      responseMessage: 'Loading Exercise...'
+      responseMessage: 'Loading Projects...'
     }
     // API_END_POINT = 'https://admin.saaditrips.com';
   }
 
   componentWillMount() {
-    this.fetchExercise();
+    this.fetchProjects();
   }
 
-  fetchExercise = () => {
+  fetchProjects = () => {
     this.setState({ loading: true })
-    axios.get(`${API_END_POINT}/api/v1/exercise`)
+    axios.get(`${API_END_POINT}/api/fetch/project-fetch`)
     .then(response => {
       this.setState({
-        exercises: response.data.exercises,
+        projects: response.data.projects,
         loading: false,
-        responseMessage: 'No Exercise Found'
+        responseMessage: 'No Projects Found'
       })
     })
     .catch(() => {
       this.setState({
         loading: false,
-        responseMessage: 'No Exercise Found...'
+        responseMessage: 'No Projects Found...'
       })
     })
   }
   
-  deleteExercise(exerciseId, index) {
-    if(confirm("Are you sure you want to delete this exercise?")) {
-      axios.delete(`${API_END_POINT}/api/v1/exercise/${exerciseId}`)
+  deleteProjects(exerciseId, index) {
+    if(confirm("Are you sure you want to delete this project?")) {
+      axios.delete(`${API_END_POINT}/api/v1/project/${exerciseId}`)
         .then(response => {
-          const exercises = this.state.exercises.slice();
-          exercises.splice(index, 1);
-          this.setState({ exercises });
+          const projects = this.state.projects.slice();
+          projects.splice(index, 1);
+          this.setState({ projects });
           window.alert(response.data.message);
         });
     }
@@ -69,22 +69,22 @@ export default class Exercise extends React.Component {
   handleSearch() {
     const { q } = this.state;
     if(q.length) {
-    this.setState({loading: true, exercises: [], responseMessage: 'Loading Exercise...'})
+    this.setState({loading: true, projects: [], responseMessage: 'Loading Projects...'})
     // if(q === "") {
-    //   this.fetchExercise();
+    //   this.fetchProjects();
     // } else {
-      axios.get(`${API_END_POINT}/api/items/exercise/search`, {params: {"searchWord": this.state.q}, headers: {"auth-token": token}})
+      axios.get(`${API_END_POINT}/api/items/project/search`, {params: {"searchWord": this.state.q}, headers: {"auth-token": token}})
       .then((response) => {
         this.setState({
-          exercises: response.data.searchedItems,
+          projects: response.data.searchedItems,
           loading: false,
-          responseMessage: 'No Exercise Found...'
+          responseMessage: 'No Projects Found...'
         })
       })
       .catch(() => {
         this.setState({
           loading: false,
-          responseMessage: 'No Exercise Found...'
+          responseMessage: 'No Projects Found...'
         })
       })
     }
@@ -92,13 +92,13 @@ export default class Exercise extends React.Component {
 
   render() {
     // console.log(this.state);
-    const {loading, exercises, responseMessage} = this.state; 
+    const {loading, projects, responseMessage} = this.state; 
     return (
       <div className="row animated fadeIn">
         <div className="col-12">
           <div className="row space-1">
             <div className="col-sm-4">
-              <h3>List of Exercises</h3>
+              <h3>List of Projectss</h3>
             </div>
             <div  className="col-sm-4">
               <div className='input-group'>
@@ -110,7 +110,7 @@ export default class Exercise extends React.Component {
                   value={this.state.q}
                   onChange={(event) => this.setState({q: event.target.value}, () => {
                     if(this.state.q === "") {
-                      this.fetchExercise();
+                      this.fetchProjects();
                     }
                   })}
                   onKeyPress={(event) => {
@@ -126,8 +126,8 @@ export default class Exercise extends React.Component {
             </div>
 
           <div className="col-sm-4 pull-right mobile-space">
-              <Link to="/exercise/exercise-form">
-                <button type="button" className="btn btn-success">Add New Exercise</button>
+              <Link to="/projects/projects-form">
+                <button type="button" className="btn btn-success">Add New Projects</button>
               </Link>
           </div>
 
@@ -151,28 +151,28 @@ export default class Exercise extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                {this.state.exercises && this.state.exercises.length >= 1 ?
-                this.state.exercises.map((exercise, index) => (
+                {this.state.projects && this.state.projects.length >= 1 ?
+                this.state.projects.map((project, index) => (
                   <tr key={index}>
                   <td>{index + 1}</td>
-                  <td style={{textTransform: "capitalize"}}>{exercise.name}</td>
-                  {/* <td>{<img style={{height: '50px', width: '50px'}} src={exercise.image && exercise.image}/>}</td> */}
-                  <td>{exercise.total_days}</td>
-                  <td>{exercise.sets}</td>
-                  <td>{exercise.reps}</td>
-                  <td>{exercise.intensity}</td>
-                  <td>{exercise.timer_type ? exercise.timer_type : "-"}</td>
-                  <td>{exercise.duration ? exercise.duration : "-"}</td>
-                  <td>{exercise.timer_type ? exercise.timer_type : "-"}</td>
-                  <td>{exercise.rest_duration ? exercise.rest_duration : "-"}</td>
-                  <td>{exercise.video_urls ? exercise.video_urls.length : "-"}</td>
+                  <td style={{textTransform: "capitalize"}}>{project.name}</td>
+                  {/* <td>{<img style={{height: '50px', width: '50px'}} src={project.image && project.image}/>}</td> */}
+                  <td>{project.total_days}</td>
+                  <td>{project.sets}</td>
+                  <td>{project.reps}</td>
+                  <td>{project.intensity}</td>
+                  <td>{project.timer_type ? project.timer_type : "-"}</td>
+                  <td>{project.duration ? project.duration : "-"}</td>
+                  <td>{project.timer_type ? project.timer_type : "-"}</td>
+                  <td>{project.rest_duration ? project.rest_duration : "-"}</td>
+                  <td>{project.video_urls ? project.video_urls.length : "-"}</td>
                   <td>
-                    <Link to={`/exercise/edit-exercise/${exercise.id}`}>
+                    <Link to={`/projects/edit-projects/${project.id}`}>
                       <span className="fa fa-edit" aria-hidden="true"></span>
                     </Link>
                   </td>
                   <td>
-                    <span className="fa fa-trash" style={{cursor: 'pointer'}} aria-hidden="true" onClick={() => this.deleteExercise(exercise.id, index)}></span>
+                    <span className="fa fa-trash" style={{cursor: 'pointer'}} aria-hidden="true" onClick={() => this.deleteProjects(project.id, index)}></span>
                   </td>
                 </tr>
                 )) :

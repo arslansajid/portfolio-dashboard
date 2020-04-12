@@ -11,15 +11,15 @@ export default {
       icon: 'icon-layers',
     },
     {
-      name: 'Workout (Exercise)',
-      url: '/exercise',
+      name: 'Projects',
+      url: '/projects',
       icon: 'icon-list',
     },
-    // {
-    //   name: 'Users',
-    //   url: '/users',
-    //   icon: 'icon-user',
-    // },
+    {
+      name: 'Users',
+      url: '/users',
+      icon: 'icon-user',
+    },
     // {
     //   name: 'Special Offers',
     //   url: '/special-offers',

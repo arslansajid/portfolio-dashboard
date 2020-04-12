@@ -55,7 +55,10 @@ class Login extends Component {
     const {username, password} = this.state;
     if (!this.state.loading) {
       this.setState({ loading: true });
-      axios.post(`${API_END_POINT}/api/v1/users/sign_in?email=${username}&password=${password}`)
+      const user = {email: username, password};
+      let requestBody = { 'user' : JSON.stringify(user)};
+      // /api/user/signIn
+      axios.post(`${API_END_POINT}/api/user/signIn`, requestBody)
       .then(response => {
         //console.log("####", response);
         if (response && response.status == 200) {

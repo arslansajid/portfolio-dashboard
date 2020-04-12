@@ -20,8 +20,8 @@ import UserForm from '../containers/UserForm';
 import SpecialOffers from '../containers/SpecialOffers';
 import SpecialOffersForm from '../containers/SpecialOffersForm';
 
-import Exercise from './Exercise';
-import ExerciseForm from './ExerciseForm';
+import Projects from './Projects';
+import ProjectsForm from './ProjectsForm';
 
 import GalleryForm from '../containers/GalleryForm';
 import Gallery from '../containers/Gallery';
@@ -63,7 +63,7 @@ class App extends React.Component {
       axios.defaults.headers.common.Authorization = `${token}`;
       this.setState({ loading: false });
     } else {
-      history.push('/login');
+      // history.push('/login');
     }
   }
 
@@ -88,9 +88,9 @@ class App extends React.Component {
                   <Route exact={true} path='/users/user_form' component={UserForm}/>
                   <Route exact={true} path="/users/edit_user/:userId" component={UserForm}/>
 
-                  <Route exact={true} path="/exercise" component={Exercise}/>
-                  <Route exact={true} path="/exercise/exercise-form" component={ExerciseForm}/>
-                  <Route exact={true} path="/exercise/edit-exercise/:exerciseId" component={ExerciseForm}/>
+                  <Route exact={true} path="/projects" component={Projects}/>
+                  <Route exact={true} path="/projects/projects-form" component={ProjectsForm}/>
+                  <Route exact={true} path="/projects/edit-projects/:exerciseId" component={ProjectsForm}/>
                   
                 </Switch>
               </Container>

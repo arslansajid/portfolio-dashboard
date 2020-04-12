@@ -25,7 +25,7 @@ export default class Users extends React.Component {
   }
 
   fetchUsers = () => {
-    axios.get(`${API_END_POINT}/api/users`)
+    axios.get(`${API_END_POINT}/api/user/fetch`)
       .then(response => {
         this.setState({
           users: response.data.objects,

@@ -1,7 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import axios from 'axios';
-import RichTextEditor from 'react-rte';
 import { Button } from 'reactstrap';
 import { API_END_POINT } from '../config';
 import Cookie from 'js-cookie';
@@ -14,44 +12,33 @@ export default class ExerciseForm extends React.Component {
     super(props);
     this.state = {
       loading: false,
-      exercise: {
+      project: {
+        domain: '',
         name: '',
-        total_days: 0,
-        sets: 0,
-        reps: 0,
-        intensity: 0,
-        timer_type: '',
-        duration: 0,
-        rest_duration: 0,
-        video_files: []
+        client: '',
+        completed_At: '',
+        description: '',
+        gallery: [],
       },
-      cities: [],
-      city: '',
-      exerciseId: '',
-      profile_picture: '',
-      videoInputCount: 1,
-      description: RichTextEditor.createEmptyValue(),
     };
-    // this.rteState = RichTextEditor.createEmptyValue();
-    // API_END_POINT = 'https://admin.saaditrips.com';
     this.handleInputChange = this.handleInputChange.bind(this);
-    this.postExercise = this.postExercise.bind(this);
+    this.postProject = this.postProject.bind(this);
   }
 
   componentDidMount() {
     const { match } = this.props;
-    if (match.params.exerciseId)
-      axios.get(`${API_END_POINT}/api/v1/exercise/${match.params.exerciseId}`)
+    if (match.params.projectId)
+      axios.get(`${API_END_POINT}/api/v1/project/${match.params.projectId}`)
         .then((response) => {
           this.setState({
-            exercise: response.data.exercise,
+            project: response.data.project,
           }, () => {
-            const {exercise} = this.state;
-            if(exercise.videos_url === null) {
-              exercise.video_files = [];
-              this.setState({ exercise })
+            const {project} = this.state;
+            if(project.videos_url === null) {
+              project.video_files = [];
+              this.setState({ project })
             } else {
-              this.setState({videoInputCount: exercise.videos_url.length })
+              this.setState({videoInputCount: project.videos_url.length })
             }
           });
         });
@@ -60,18 +47,18 @@ export default class ExerciseForm extends React.Component {
   setCity(selectedCity) {
     this.setState(prevState => ({
       city: selectedCity,
-      exercise: {
-        ...prevState.exercise,
+      project: {
+        ...prevState.project,
         city_id: selectedCity.ID,
       },
     }));
   }
 
   setDescription(description) {
-    const { exercise } = this.state;
-    exercise.description = description.toString('html');
+    const { project } = this.state;
+    project.description = description.toString('html');
     this.setState({
-      exercise,
+      project,
       description,
     });
   }
@@ -79,43 +66,41 @@ export default class ExerciseForm extends React.Component {
   handleInputChange(event) {
     const { value, name } = event.target;
 
-    const { exercise } = this.state;
-    exercise[name] = value;
-    this.setState({ exercise });
+    const { project } = this.state;
+    project[name] = value;
+    this.setState({ project });
   }
 
   handleVideoURLChange = (event, index) => {
     const { name } = event.target;
-    const { exercise } = this.state;
-    exercise[name][index] = event.target.files[0];
-    this.setState({ exercise });
+    const { project } = this.state;
+    project[name][index] = event.target.files[0];
+    this.setState({ project });
   }
 
-  postExercise(event) {
+  postProject(event) {
     event.preventDefault();
     const { match, history } = this.props;
-    const { loading, exercise } = this.state;
+    const { loading, project } = this.state;
     if (!loading) {
       const fd = new FormData();
 
-      let videosArray = [];
-      for (let index = 0; index < exercise.video_files.length; index += 1) {
-        videosArray.push(exercise.video_files[index]);
-      }
+      // let videosArray = [];
+      // for (let index = 0; index < project.video_files.length; index += 1) {
+      //   videosArray.push(project.video_files[index]);
+      // }
 
-      exercise.video_files.forEach((video, index) => {
-        fd.append(`video_files[${index}]`, video);
-      });
-      delete exercise["video_files"];
-      Object.keys(exercise).forEach((eachState) => {
-        fd.append(`${eachState}`, exercise[eachState]);
+      // project.video_files.forEach((video, index) => {
+      //   fd.append(`video_files[${index}]`, video);
+      // });
+
+      Object.keys(project).forEach((eachState) => {
+        fd.append(`${eachState}`, project[eachState]);
       })
-
       
-
       this.setState({ loading: true });
-      if (match.params.exerciseId) {
-        axios.put(`${API_END_POINT}/api/v1/exercise/${match.params.exerciseId}`, fd)
+      if (match.params.projectId) {
+        axios.put(`${API_END_POINT}/api/save/project-save/${match.params.projectId}`, fd)
           .then((response) => {
             if (response.data && response.status === 200) {
               window.alert(response.data.message);
@@ -131,7 +116,7 @@ export default class ExerciseForm extends React.Component {
           })
       }
       else {
-        axios.post(`${API_END_POINT}/api/v1/exercise`, fd)
+        axios.post(`${API_END_POINT}/api/save/project-save`, fd)
           .then((response) => {
             if (response.data && response.status === 200) {
               window.alert(response.data.message);
@@ -159,7 +144,7 @@ export default class ExerciseForm extends React.Component {
     console.log(this.state);
     const {
       loading,
-      exercise,
+      project,
       description,
       city,
       cities,
@@ -174,7 +159,7 @@ export default class ExerciseForm extends React.Component {
             <div className="col-md-12 col-sm-12">
               <div className="x_panel">
                 <div className="x_title">
-                  <h2>Enter Exercise Details</h2>
+                  <h2>Enter Project Details</h2>
                 </div>
                 <div className="x_content">
                   <br />
@@ -182,7 +167,7 @@ export default class ExerciseForm extends React.Component {
                     id="demo-form2"
                     data-parsley-validate
                     className="form-horizontal form-label-left"
-                    onSubmit={this.postExercise}
+                    onSubmit={this.postProject}
                   >
 
                     <div className="form-group row">
@@ -196,7 +181,7 @@ export default class ExerciseForm extends React.Component {
                           type="text"
                           name="name"
                           className="form-control"
-                          value={exercise.name}
+                          value={project.name}
                           onChange={this.handleInputChange}
                         />
                       </div>
@@ -205,15 +190,15 @@ export default class ExerciseForm extends React.Component {
                     <div className="form-group row">
                       <label
                         className="control-label col-md-3 col-sm-3"
-                      >Total Days
+                      >Client
                       </label>
                       <div className="col-md-6 col-sm-6">
                         <input
                           required
-                          type="number"
-                          name="total_days"
+                          type="text"
+                          name="client"
                           className="form-control"
-                          value={exercise.total_days}
+                          value={project.client}
                           onChange={this.handleInputChange}
                         />
                       </div>
@@ -222,15 +207,15 @@ export default class ExerciseForm extends React.Component {
                     <div className="form-group row">
                       <label
                         className="control-label col-md-3 col-sm-3"
-                      >Sets
+                      >Domain
                       </label>
                       <div className="col-md-6 col-sm-6">
                         <input
                           required
-                          type="number"
-                          name="sets"
+                          type="text"
+                          name="domain"
                           className="form-control"
-                          value={exercise.sets}
+                          value={project.domain}
                           onChange={this.handleInputChange}
                         />
                       </div>
@@ -239,89 +224,38 @@ export default class ExerciseForm extends React.Component {
                     <div className="form-group row">
                       <label
                         className="control-label col-md-3 col-sm-3"
-                      >Reps
+                      >Description
                       </label>
                       <div className="col-md-6 col-sm-6">
                         <input
                           required
-                          type="number"
-                          name="reps"
+                          type="text"
+                          name="description"
                           className="form-control"
-                          value={exercise.reps}
+                          value={project.description}
                           onChange={this.handleInputChange}
                         />
                       </div>
                     </div>
 
-                    <div className="form-group row">
-                      <label
-                        className="control-label col-md-3 col-sm-3"
-                      >Intensity
-                      </label>
-                      <div className="col-md-6 col-sm-6">
-                        <input
-                          required
-                          type="number"
-                          name="intensity"
-                          className="form-control"
-                          value={exercise.intensity}
-                          onChange={this.handleInputChange}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-group row">
+                    {/* <div className="form-group row">
                       <label className="control-label col-md-3 col-sm-3">Timer Type</label>
                       <div className="col-md-6 col-sm-6">
                         <select
                           name="timer_type"
-                          value={exercise.timer_type}
+                          value={project.timer_type}
                           className="form-control"
                           onChange={this.handleInputChange}
                           required
                         >
                           <option value="">Select Type</option>
-                          <option value="exercise">Exercise</option>
+                          <option value="project">Project</option>
                           <option value="rest">Rest</option>
                         </select>
                       </div>
-                    </div>
+                    </div> */}
 
-                    <div className="form-group row">
-                      <label
-                        className="control-label col-md-3 col-sm-3"
-                      >Duration
-                      </label>
-                      <div className="col-md-6 col-sm-6">
-                        <input
-                          required
-                          type="number"
-                          name="duration"
-                          className="form-control"
-                          value={exercise.duration}
-                          onChange={this.handleInputChange}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-group row">
-                      <label
-                        className="control-label col-md-3 col-sm-3"
-                      >Rest Duration
-                      </label>
-                      <div className="col-md-6 col-sm-6">
-                        <input
-                          required
-                          type="number"
-                          name="rest_duration"
-                          className="form-control"
-                          value={exercise.rest_duration}
-                          onChange={this.handleInputChange}
-                        />
-                      </div>
-                    </div>
-
-                  {[...Array(videoInputCount)].map((count, index) => {
+                  {/* {[...Array(videoInputCount)].map((count, index) => {
                     return (
                       <div className="form-group row" key={index}>
                       <label className="control-label col-md-3 col-sm-3">Video</label>
@@ -335,40 +269,9 @@ export default class ExerciseForm extends React.Component {
                         />
                       </div>
                     </div>
-                    //   <div className="form-group row" key={index}>
-                    //   <label
-                    //     className="control-label col-md-3 col-sm-3"
-                    //   >Video URL
-                    //   </label>
-                    //   <div className="col-md-6 col-sm-6">
-                    //     <input
-                    //       // required
-                    //       type="text"
-                    //       name="video_files"
-                    //       className="form-control"
-                    //       value={!!exercise.video_files ? exercise.video_files[index] : []}
-                    //       onChange={(event) => this.handleVideoURLChange(event, index)}
-                    //     />
-                    //   </div>
-                    // </div>
                     )
-                  })}
+                  })} */}
                     
-                    <div className="form-group row">
-                      <label
-                        className="control-label col-md-3 col-sm-3"
-                      >
-                      </label>
-                      <div className="col-md-6 col-sm-6 text-right">
-                        <Button className={`btn btn-info btn-md mr-1`} onClick={() => this.setState({ videoInputCount: videoInputCount + 1})}>
-                          Add more
-                        </Button>
-                        <Button className={`btn btn-danger btn-md`} onClick={() => {exercise.video_files.pop(); this.setState({exercise, videoInputCount: videoInputCount - 1})} } disabled={videoInputCount === 1}>
-                          Remove
-                        </Button>
-                      </div>
-                    </div>
-
                     <div className="ln_solid" />
                     <div className="form-group row">
                       <div className="col-md-6 col-sm-6 offset-md-3">

@@ -2,7 +2,7 @@ const routes = {
   '/': 'Home',
   '/programs': 'Programs',
   '/programs/program-form': 'Program Form',
-  '/programs/exercises': 'Add Program Exercise',
+  '/programs/exercises': 'Add Program Projects',
   '/programs/edit-program': 'Edit Program',
 
   '/users': 'Users',
@@ -13,9 +13,9 @@ const routes = {
   '/special-offers/specialOffer_form': 'Special Offers Form',
   '/special-offers/edit_specialOffer': 'Edit Special Offers',
 
-  '/exercise': 'Exercise',
-  '/exercise/exercise-form': 'Exercise Form',
-  '/exercise/edit-exercise': 'Edit Exercise',
+  '/projects': 'Projects',
+  '/projects/projects-form': 'Projects Form',
+  '/projects/edit-projects': 'Edit Projects',
 
   '/properties': 'Properties',
   '/properties/edit-property': 'Edit Property',
